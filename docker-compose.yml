@@ -1,0 +1,75 @@
+version: '3.8'
+services:
+  transaction-recevier-db:
+    image: "postgres:latest"
+    container_name: transaction-recevier-db_c
+    restart: always
+    environment:
+      - POSTGRES_USER=transaction-recevier
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - transaction-recevier-db-data:/data/postgres
+    network_mode: development
+
+  credelec-simulator-db:
+    image: "postgres:latest"
+    container_name: credelec-simulator-db_c
+    restart: always
+    environment:
+      - POSTGRES_USER=credelec-simulator
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - credelec-simulator-db-data:/data/postgres
+    network_mode: development
+  
+  # transaction-verifier-db:
+  #   image: "postgres:latest"
+  #   container_name: transaction-verifier-db_c
+  #   restart: always
+  #   environment:
+  #     - POSTGRES_USER=transaction-verifier
+  #     - POSTGRES_PASSWORD=postgres
+  #     - POSTGRES_DB=postgres
+  #   ports:
+  #     - "5434:5432"
+  #   volumes:
+  #     - transaction-verifier-db-data:/data/postgres
+  #   network_mode: development
+
+  queue-system:
+    image: "rabbitmq:3-management"
+    container_name: queue-system_c
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    network_mode: development
+
+  # transaction-recevier:
+  #   build: ./transaction-recevier
+  #   container_name: transaction-recevier_c
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./transaction-recevier/src:/app/src
+  #     - ./transaction-recevier/prisma:/app/prisma
+  #   env_file:
+  #     - .env
+  #   network_mode: development
+
+
+volumes:
+  transaction-recevier-db-data:
+    driver: local
+  credelec-simulator-db-data:
+    driver: local
+  transaction-verifier-db-data:
+    driver: local

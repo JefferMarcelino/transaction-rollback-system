@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x"]
+  output   = "./generated/prisma_transaction"
+}
+
+generator prismaClassGenerator {
+  provider = "prisma-class-generator"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("TRANSACTION_RECEVIER_DB_URL")
+}
+
+model User {
+  id          String        @id @default(uuid())
+  name        String
+  balance     Float         @default(10000)
+  Transaction Transaction[]
+}
+
+model Transaction {
+  id                String   @id @default(uuid())
+  userId            String
+  createdAt         DateTime @default(now())
+  amount            Float
+
+  User User @relation(fields: [userId], references: [id])
+}
